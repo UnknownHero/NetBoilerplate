@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrapper\BootsrapperFactory.cs" />
+    <Compile Include="Bootstrapper\IBootsrapperFactory.cs" />
     <Compile Include="Bootstrapper\CommonBootstrapper.cs" />
     <Compile Include="Bootstrapper\IBootstrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
