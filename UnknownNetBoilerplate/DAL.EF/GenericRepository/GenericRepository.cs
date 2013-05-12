@@ -43,6 +43,17 @@ namespace DAL.EF.GenericRepository
 			this.UnitOfWork = unitOfWork;
 		}
 
+        public GenericRepository(
+            IUnitOfWork unitOfWork
+           
+            )
+        { 
+            this.EnsureNotNull(unitOfWork);
+
+            this.SpecificationLocator = null;
+            this.UnitOfWork = unitOfWork;
+        }
+
 		/// <summary>
 		/// Checks if given instance is not null. Use the method to validate input parameters.
 		/// </summary>

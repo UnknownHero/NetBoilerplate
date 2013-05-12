@@ -5,50 +5,62 @@ using Infrastructure.DAL;
 namespace DAL.EF
 {
     /// <summary>
-    /// Unit of work factory implementation for Entity Framework.
-    /// Note: implementation based on extension Feature CTP4.
+    ///     Unit of work factory implementation for Entity Framework.
+    ///     Note: implementation based on extension Feature CTP4.
     /// </summary>
     public class EntityFrameworkUnitOfWorkFactory : IUnitOfWorkFactory
     {
+        private DbContext _dbContext;
+
         public EntityFrameworkUnitOfWorkFactory(string connectionString, DbModel dbModel)
         {
-            this.ConnectionString = connectionString;
-			this.DbModel = dbModel;
+            ConnectionString = connectionString;
+            DbModel = dbModel;
+        }
+
+        public EntityFrameworkUnitOfWorkFactory( DbContext dbContext)
+        {
+       
+            _dbContext = dbContext;
         }
 
         protected string ConnectionString { get; private set; }
 
-		protected DbModel DbModel { get; private set; }
+        protected DbModel DbModel { get; private set; }
 
         public IUnitOfWork BeginUnitOfWork()
         {
-			return new EntityFrameworkUnitOfWork(
-				this.CreateDbContext()
-				);
+            CreateDbContext();
+            return new EntityFrameworkUnitOfWork(
+                _dbContext
+                );
         }
-
-		private DbContext CreateDbContext()
-		{
-			return new DbContext(
-				this.ConnectionString
-				, this.DbModel.Compile()
-				);
-		}
 
         public void EndUnitOfWork(IUnitOfWork unitOfWork)
         {
-			var linqToSqlUnitOfWork = unitOfWork as EntityFrameworkUnitOfWork;
-			if (linqToSqlUnitOfWork != null)
-			{
-				linqToSqlUnitOfWork.Dispose();
-				linqToSqlUnitOfWork = null;
-			}
+            var linqToSqlUnitOfWork = unitOfWork as EntityFrameworkUnitOfWork;
+            if (linqToSqlUnitOfWork != null)
+            {
+                linqToSqlUnitOfWork.Dispose();
+                linqToSqlUnitOfWork = null;
+            }
         }
 
         public void Dispose()
         {
-			this.ConnectionString = null;
-			this.DbModel = null;
+            ConnectionString = null;
+            DbModel = null;
         }
-	}
+
+        private void CreateDbContext()
+        {
+            if (_dbContext == null && DbModel != null)
+            {
+                _dbContext = new DbContext(
+                    ConnectionString
+                    , DbModel.Compile()
+                    );
+            }
+        }
+    }
 }

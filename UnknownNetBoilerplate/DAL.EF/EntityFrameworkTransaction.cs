@@ -24,7 +24,7 @@ namespace DAL.EF
         /// </summary>
         public void Commit()
         {
-            this.UnitOfWork.Flush();
+            this.UnitOfWork.Commit();
             this.TransactionScope.Complete();
         }
 

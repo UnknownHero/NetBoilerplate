@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using DAL.EF.GenericRepository;
 using Infrastructure.DAL;
 
 namespace DAL.EF
@@ -15,7 +16,7 @@ namespace DAL.EF
 
         public DbContext DbContext { get; protected set; }
 
-        public void Flush()
+        public void Commit()
         {
             DbContext.SaveChanges();
         }
@@ -57,6 +58,16 @@ namespace DAL.EF
         public IList<TEntity> GetAll<TEntity>() where TEntity : class
         {
             return DbContext.Set<TEntity>().ToList();
+        }
+
+        public IGenericRepository<TEntity, TGuid> GetRepository<TEntity, TGuid>(ISpecificationLocator locator) where TEntity : class
+        {
+            return new GenericRepository<TEntity, TGuid>(this,locator);
+        }
+
+        public IGenericRepository<TEntity, TGuid> GetRepository<TEntity, TGuid>( ) where TEntity : class
+        {
+            return new GenericRepository<TEntity, TGuid>(this);
         }
 
         public void Dispose()
