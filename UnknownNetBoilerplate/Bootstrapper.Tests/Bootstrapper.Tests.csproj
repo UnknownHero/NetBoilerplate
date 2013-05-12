@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4C18675E-B42D-43F4-9480-52001CD65E81}</ProjectGuid>
+    <ProjectGuid>{605983FB-154F-42A6-9293-0FA8A8C5E43B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Infrastructure</RootNamespace>
-    <AssemblyName>Infrastructure</AssemblyName>
+    <RootNamespace>Bootstrapper.Tests</RootNamespace>
+    <AssemblyName>Bootstrapper.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,11 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EmitMapper">
-      <HintPath>..\packages\EmitMapper.1.0.0\lib\EmitMapper.dll</HintPath>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\infrastructure\bin\Debug\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\Infrastructure.Tests\bin\Debug\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,28 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\IBackendApplication.cs" />
-    <Compile Include="Backend\IBackendApplications.cs" />
-    <Compile Include="Bootstrapper\IBootsrapperFactory.cs" />
-    <Compile Include="Bootstrapper\CommonBootstrapper.cs" />
-    <Compile Include="Bootstrapper\IBootstrapper.cs" />
-    <Compile Include="DAL\IGenericRepository.cs" />
-    <Compile Include="DAL\ISpecification.cs" />
-    <Compile Include="DAL\ISpecificationLocator.cs" />
-    <Compile Include="DAL\ISpecificationResult.cs" />
-    <Compile Include="DAL\ITransaction.cs" />
-    <Compile Include="DAL\IUnitOfWork.cs" />
-    <Compile Include="DAL\IUnitOfWorkConverter.cs" />
-    <Compile Include="DAL\IUnitOfWorkFactory.cs" />
-    <Compile Include="Domain\Entity.cs" />
-    <Compile Include="Domain\ICrypt.cs" />
+    <Compile Include="BootsrapperFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Root\ApplicationContainer.cs" />
-    <Compile Include="Utility\Mapper.cs" />
-    <Compile Include="Utility\StringBaseCrypt.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Bootstrapper\Bootstrapper.csproj">
+      <Project>{9B029549-926A-4311-B740-986F16A920B3}</Project>
+      <Name>Bootstrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\infrastructure\Infrastructure.csproj">
+      <Project>{4C18675E-B42D-43F4-9480-52001CD65E81}</Project>
+      <Name>Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
