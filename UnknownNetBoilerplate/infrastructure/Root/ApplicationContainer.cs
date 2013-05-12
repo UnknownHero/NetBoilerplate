@@ -12,6 +12,6 @@ namespace Infrastructure.Root
         /// <summary>
         /// Global container for the whole project (without end customer/UI/Console)
         /// </summary>
-         public IServiceLocator Container = null;
+         public static IServiceLocator Container = null;
     }
 }
