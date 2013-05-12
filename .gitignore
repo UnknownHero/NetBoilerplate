@@ -4,3 +4,6 @@
 /UnknownNetBoilerplate/Infrastructure.Tests/bin
 /UnknownNetBoilerplate/Backend/bin
 /UnknownNetBoilerplate/Backend/obj
+/UnknownNetBoilerplate/Backend/obj
+/UnknownNetBoilerplate/Bootstrapper/bin
+/UnknownNetBoilerplate/Bootstrapper/obj
