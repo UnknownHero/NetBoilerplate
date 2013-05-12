@@ -7,7 +7,7 @@ using Infrastructure.Bootstrapper;
 
 namespace Bootstrapper
 {
-    public class BootsrapperFactory : IBootsrapperFactory<BootstrapTypes>
+    public class BootstrapperFactory : IBootsrapperFactory<BootstrapTypes>
     {
         public IBootstrapper GetBoostrapper(BootstrapTypes index)
         {
