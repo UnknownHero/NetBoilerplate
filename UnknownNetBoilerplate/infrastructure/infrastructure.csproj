@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\IBackendApplication.cs" />
+    <Compile Include="Backend\IBackendApplications.cs" />
     <Compile Include="Bootstrapper\IBootsrapperFactory.cs" />
     <Compile Include="Bootstrapper\CommonBootstrapper.cs" />
     <Compile Include="Bootstrapper\IBootstrapper.cs" />
