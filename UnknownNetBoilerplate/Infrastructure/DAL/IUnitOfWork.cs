@@ -12,7 +12,7 @@ namespace Infrastructure.DAL
         /// Flushes content of unit of work to the underlying data storage. Causes unsaved
         /// entities to be written to the data storage.
         /// </summary>
-        void Flush();
+        void Commit();
 
         /// <summary>
         /// Begins the transaction.
@@ -54,5 +54,11 @@ namespace Infrastructure.DAL
         /// Gets all entities of the type from the storage. 
         /// </summary>
         IList<TEntity> GetAll<TEntity>() where TEntity : class;
+
+        IGenericRepository<TEntity, TGuid> GetRepository<TEntity, TGuid>(ISpecificationLocator locator)
+            where TEntity : class;
+
+        IGenericRepository<TEntity, TGuid> GetRepository<TEntity, TGuid>( )
+            where TEntity : class;
     }
 }
