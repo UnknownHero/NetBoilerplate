@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bootstrapper.Tests", "Boots
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bootstrapper", "Bootstrapper\Bootstrapper.csproj", "{9B029549-926A-4311-B740-986F16A920B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.EF", "DAL.EF\DAL.EF.csproj", "{BE83C039-9AE0-459C-BAC5-3845E7D72C44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL.EF.Tests", "DAL.EF.Tests\DAL.EF.Tests.csproj", "{669D7092-C938-4640-82C6-50D944F843D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,14 @@ Global
 		{9B029549-926A-4311-B740-986F16A920B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B029549-926A-4311-B740-986F16A920B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B029549-926A-4311-B740-986F16A920B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE83C039-9AE0-459C-BAC5-3845E7D72C44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE83C039-9AE0-459C-BAC5-3845E7D72C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE83C039-9AE0-459C-BAC5-3845E7D72C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE83C039-9AE0-459C-BAC5-3845E7D72C44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{669D7092-C938-4640-82C6-50D944F843D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{669D7092-C938-4640-82C6-50D944F843D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{669D7092-C938-4640-82C6-50D944F843D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{669D7092-C938-4640-82C6-50D944F843D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
