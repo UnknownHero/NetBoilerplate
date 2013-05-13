@@ -4,3 +4,7 @@
 /UnknownNetBoilerplate/Infrastructure.Tests/bin
 /UnknownNetBoilerplate/Backend/bin
 /UnknownNetBoilerplate/Backend/obj
+*bin/
+*obj/
+*.suo
+*.user
