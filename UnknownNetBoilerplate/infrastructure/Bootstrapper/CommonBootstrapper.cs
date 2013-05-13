@@ -4,7 +4,7 @@ namespace Infrastructure.Bootstrapper
 {
     public abstract class CommonBootstrapper
     {
-        public static IServiceLocator Locator;
+        public IServiceLocator Locator;
 
         protected CommonBootstrapper()
         {
