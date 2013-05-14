@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Data.Common;
-using DAL.EF;
 using DAL.EF.Tests.Fakes;
 using Infrastructure.DAL;
-using Infrastructure.Utility;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Utility
+namespace DAL.EF.Tests.Tests
 {
     [TestFixture]
     public class EntityFrameworkUnitOfWorkTest
