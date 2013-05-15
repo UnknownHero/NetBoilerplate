@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace Infrastructure.DAL
 {
@@ -50,7 +51,7 @@ namespace Infrastructure.DAL
         /// </summary>
         TEntity GetById<TEntity, TPrimaryKey>(TPrimaryKey id) where TEntity : class;
 
-        /// <summary>
+        IDbSet<TEntity> GetDbSet<TEntity>() where TEntity : class;/// <summary>
         /// Gets all entities of the type from the storage. 
         /// </summary>
         IList<TEntity> GetAll<TEntity>() where TEntity : class;

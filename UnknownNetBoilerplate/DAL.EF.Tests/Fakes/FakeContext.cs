@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Data.Entity;
 using System.Reflection;
+using FakeDbSet;
 
 namespace DAL.EF.Tests.Fakes
 {
@@ -11,16 +12,13 @@ namespace DAL.EF.Tests.Fakes
         {
            
             // Set up your collections
-            FakeEntity = new FakeDbSet<FakeEntity>
-                {
-                    new FakeEntity {Name = "Brent"}
-                };
-            
+            FakeEntity = new FakeDbSet<FakeEntity>();
+
         }
 
         public FakeContext(DbConnection connection) : base(connection,true)
         {
-            
+            FakeEntity = new FakeDbSet<FakeEntity>();
         }
 
         public IDbSet<FakeEntity> FakeEntity { get; set; }
@@ -35,9 +33,9 @@ namespace DAL.EF.Tests.Fakes
             throw new Exception("Type collection not found");
         }
 
-        public void SaveChanges()
-        {
-            // do nothing (probably set a variable as saved for testing)
-        }
+		public void Dispose()
+		{
+			// Do nothing!
+		}
     }
 }

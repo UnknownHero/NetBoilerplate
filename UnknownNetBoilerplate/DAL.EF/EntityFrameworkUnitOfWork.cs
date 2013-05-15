@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using DAL.EF.GenericRepository;
@@ -42,7 +43,35 @@ namespace DAL.EF
 
         public void Update<TEntity>(TEntity entity) where TEntity : class
         {
-            DbContext.Set<TEntity>().Attach(entity);
+            if (entity == null)
+            {
+                throw new ArgumentException("Cannot update a null entity.");
+            }
+
+            var entry = DbContext.Entry<TEntity>(entity);
+
+            // Retreive the Id through reflection
+            var pkey = entity.GetType().GetProperty("Id").GetValue(entity, null);
+
+            if (entry.State == EntityState.Detached)
+            {
+                var set = DbContext.Set<TEntity>();
+                TEntity attachedEntity = set.Find(pkey);  // You need to have access to key
+                if (attachedEntity != null)
+                {
+                    var attachedEntry = DbContext.Entry(attachedEntity);
+                    attachedEntry.CurrentValues.SetValues(entity);
+                }
+                else
+                {
+                    entry.State = EntityState.Modified; // This should attach entity
+                }
+            }
+
+            //            _dbSet.Local.Clear();
+            //            _dbSet.Attach(entity);
+            //            _dbContext.Entry(entity).State = EntityState.Modified;
+          
         }
 
         public void Delete<TEntity>(TEntity entity) where TEntity : class
@@ -55,8 +84,13 @@ namespace DAL.EF
             return DbContext.Set<TEntity>().Find(id);
         }
 
-        public IList<TEntity> GetAll<TEntity>() where TEntity : class
+        public IDbSet<TEntity> GetDbSet<TEntity>() where TEntity : class
         {
+            return DbContext.Set<TEntity>();
+        }
+
+        public IList<TEntity> GetAll<TEntity>() where TEntity : class
+        { 
             return DbContext.Set<TEntity>().ToList();
         }
 

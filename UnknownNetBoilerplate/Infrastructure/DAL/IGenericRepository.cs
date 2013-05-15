@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Infrastructure.DAL
 {
@@ -33,6 +36,10 @@ namespace Infrastructure.DAL
         /// Gets all entities of the type from the storage. 
         /// </summary>
         IList<TEntity> GetAll();
+
+        IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
+                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                string includeProperties = "");
 
         /// <summary>
         /// Gets specification interface for complex searching for an entity or entities.

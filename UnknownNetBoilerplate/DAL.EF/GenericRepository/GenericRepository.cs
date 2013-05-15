@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
 using DAL.EF.Exceptions;
 using Infrastructure.DAL;
 
@@ -147,5 +150,32 @@ namespace DAL.EF.GenericRepository
 			specification.Initialize(UnitOfWork);
 			return specification;
 		}
+
+        public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+        {
+            IQueryable<TEntity> query = UnitOfWork.GetDbSet<TEntity>();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (!String.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach (string includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).AsQueryable();
+            }
+            else
+            {
+                return query.AsQueryable();
+            }
+        }
 	}
 }
