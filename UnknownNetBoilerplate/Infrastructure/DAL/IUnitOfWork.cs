@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using Infrastructure.Domain;
 
 namespace Infrastructure.DAL
 {
@@ -31,35 +32,9 @@ namespace Infrastructure.DAL
         /// See also <seealso cref="ITransaction"/> interface for more details.
         void EndTransaction(ITransaction transaction);
 
-        /// <summary>
-        /// Inserts entity to the storage.
-        /// </summary>
-        void Insert<TEntity>(TEntity entity) where TEntity : class;
+         
+        IGenericRepository<TEntity, TId> GetRepository<TEntity, TId>( )
+            where TEntity : Entity<TId>;
 
-        /// <summary>
-        /// Updates entity in the storage.
-        /// </summary>
-        void Update<TEntity>(TEntity entity) where TEntity : class;
-
-        /// <summary>
-        /// Deletes entity in the storage.
-        /// </summary>
-        void Delete<TEntity>(TEntity entity) where TEntity : class;
-
-        /// <summary>
-        /// Gets entity from the storage by it's Id.
-        /// </summary>
-        TEntity GetById<TEntity, TPrimaryKey>(TPrimaryKey id) where TEntity : class;
-
-        IDbSet<TEntity> GetDbSet<TEntity>() where TEntity : class;/// <summary>
-        /// Gets all entities of the type from the storage. 
-        /// </summary>
-        IList<TEntity> GetAll<TEntity>() where TEntity : class;
-
-        IGenericRepository<TEntity, TGuid> GetRepository<TEntity, TGuid>(ISpecificationLocator locator)
-            where TEntity : class;
-
-        IGenericRepository<TEntity, TGuid> GetRepository<TEntity, TGuid>( )
-            where TEntity : class;
     }
 }

@@ -1,159 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using DAL.EF.Exceptions;
 using Infrastructure.DAL;
+using Infrastructure.Domain;
 
 namespace DAL.EF.GenericRepository
 {
-	/// <summary>
-	/// Generic repository wraps given <see cref="IUnitOfWork"/> implementation
-	/// and provides unified access to the entities stored in underlying data storage.
-	/// </summary>
-	/// <remarks>
-	/// Additionally to <see cref="IUnitOfWork"/>, the repository supports 
-	/// fluently initialized specifications. See also <see cref="Specify"/> method.
-	/// 
-	/// All commands have to be executed over started unit of work session.
-	///
-	/// Flushing of entities to underlying data storage is in competence of 
-	/// given unit of work. In other words, synchronization between in-memory repository
-	/// and data storage (e.g. database) is done via unit of work. This way the client
-	/// has complete control over calling data storage and can optimize the way the entities
-	/// are managed.
-	/// </remarks>
-	public class GenericRepository<TEntity, TPrimaryKey> : IGenericRepository<TEntity, TPrimaryKey>
-		where TEntity : class
+
+    public class GenericRepository<TEntity, TPrimaryKey> : IGenericRepository<TEntity, TPrimaryKey>
+		where TEntity : Entity<TPrimaryKey>
 	{
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		/// <param name="unitOfWork">Unit of work for concrete implementation of data mapper.</param>
-		/// <param name="specificationLocator">Specification locator resolves implementations of
-		/// <see cref="ISpecification"/> interface. <see cref="ISpecificationLocator"/> is normally
-		/// wrapper over IoC container.</param>
-		public GenericRepository(
-			IUnitOfWork unitOfWork
-			, ISpecificationLocator specificationLocator
-			)
-		{
-			this.EnsureNotNull(specificationLocator);
-			this.EnsureNotNull(unitOfWork);
+	    private readonly DbContext _dbContext;
+        private readonly DbSet<TEntity> _dbSet;
 
-			this.SpecificationLocator = specificationLocator;
-			this.UnitOfWork = unitOfWork;
-		}
-
-        public GenericRepository(
-            IUnitOfWork unitOfWork
-           
-            )
-        { 
-            this.EnsureNotNull(unitOfWork);
-
-            this.SpecificationLocator = null;
-            this.UnitOfWork = unitOfWork;
+        public GenericRepository(DbContext dbContext)
+        {
+            _dbContext = dbContext;
+            _dbSet = dbContext.Set<TEntity>();
+            dbContext.Configuration.LazyLoadingEnabled = true;
         }
 
-		/// <summary>
-		/// Checks if given instance is not null. Use the method to validate input parameters.
-		/// </summary>
-		protected void EnsureNotNull(object o)
-		{
-			if (o == null)
-			{
-				throw new ArgumentNullException("o", "Argument can not be null.");
-			}
-		}
+        #region IRepository<T> Members
 
-		/// <summary>
-		/// Gets specification locator for the repository to resolve specifications.
-		/// </summary>
-		protected ISpecificationLocator SpecificationLocator { get; private set; }
-
-		/// <summary>
-		/// Gets unit of work the repository operates on.
-		/// </summary>
-		protected IUnitOfWork UnitOfWork { get; private set; }
-
-		/// <summary>
-		/// Inserts entity to the repository.
-		/// </summary>
-		public virtual void Insert(TEntity entity)
-		{
-			this.UnitOfWork.Insert<TEntity>(entity);
-		}
-
-		/// <summary>
-		/// Updates entity in the repository.
-		/// </summary>
-		public virtual void Update(TEntity entity)
-		{
-			this.UnitOfWork.Update<TEntity>(entity);
-		}
-
-		/// <summary>
-		/// Deletes entity from the repository.
-		/// </summary>
-		public virtual void Delete(TEntity entity)
-		{
-			this.UnitOfWork.Delete<TEntity>(entity);
-		}
-
-		/// <summary>
-		/// Gets entity from the repository by given id.
-		/// </summary>
-		/// <param name="id">Primary key that identifies the entity.</param>
-		public virtual TEntity GetById(TPrimaryKey id)
-		{
-			return this.UnitOfWork.GetById<TEntity, TPrimaryKey>(id);
-		}
-
-		/// <summary>
-		/// Gets all entities from the repository.
-		/// </summary>
-		public virtual IList<TEntity> GetAll()
-		{
-			return this.UnitOfWork.GetAll<TEntity>();
-		}
-
-		/// <summary>
-		/// Gets specification that allows to filter only requested entities
-		/// from the repository.
-		/// </summary>
-		/// <typeparam name="TSpecification">Concrete specification that will be resolved
-		/// and initialized with underlying unit of work instance. This ensures fluent 
-		/// and strongly typed way of connecting repository (uow) and specifications.</typeparam>
-		public virtual TSpecification Specify<TSpecification>()
-			where TSpecification : class, ISpecification<TEntity>
-		{
-			TSpecification specification = default(TSpecification);
-			
-			try
-			{
-				specification = this.SpecificationLocator.Resolve<TSpecification, TEntity>();
-			}
-			catch (Exception ex)
-			{
-				throw new GenericRepositoryException(
-					string.Format(
-						"Could not resolve requested specification {0} for entity {1} from the specification locator."
-						, typeof(TSpecification).FullName 
-						, typeof(TEntity).FullName
-						)
-					, ex
-					);
-			}
-
-			specification.Initialize(UnitOfWork);
-			return specification;
-		}
-
-        public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+        public override int Count
         {
-            IQueryable<TEntity> query = UnitOfWork.GetDbSet<TEntity>();
+            get { return _dbSet.Count(); }
+        }
+
+        public override IQueryable<TEntity> All()
+        {
+            return _dbSet.AsQueryable();
+        }
+
+        public override IQueryable<TEntity> AsNoTracking()
+        {
+            return _dbSet.AsNoTracking();
+        }
+
+        public override TEntity GetById(TPrimaryKey id)
+        {
+            return _dbSet.Find(id);
+        }
+
+        public override IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+        {
+            IQueryable<TEntity> query = _dbSet;
 
             if (filter != null)
             {
@@ -162,7 +57,7 @@ namespace DAL.EF.GenericRepository
 
             if (!String.IsNullOrWhiteSpace(includeProperties))
             {
-                foreach (string includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (string includeProperty in includeProperties.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProperty);
                 }
@@ -177,5 +72,101 @@ namespace DAL.EF.GenericRepository
                 return query.AsQueryable();
             }
         }
+
+        public override IQueryable<TEntity> Filter(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbSet.Where(predicate).AsQueryable();
+        }
+
+        public override IQueryable<TEntity> Filter(Expression<Func<TEntity, bool>> filter, out int total, int index = 0, int size = 50)
+        {
+            int skipCount = index*size;
+            IQueryable<TEntity> resetSet = filter != null ? _dbSet.Where(filter).AsQueryable() : _dbSet.AsQueryable();
+            resetSet = skipCount == 0 ? resetSet.Take(size) : resetSet.Skip(skipCount).Take(size);
+            total = resetSet.Count();
+            return resetSet.AsQueryable();
+        }
+
+        public override bool Contains(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbSet.Count(predicate) > 0;
+        }
+
+        public override TEntity Find(params object[] keys)
+        {
+            return _dbSet.Find(keys);
+        }
+
+        public override TEntity Find(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbSet.FirstOrDefault(predicate);
+        }
+
+        public override TEntity Create(TEntity entity)
+        {
+            TEntity newEntry = _dbSet.Add(entity);
+            return newEntry;
+        }
+
+        public override void Delete(TPrimaryKey id)
+        {
+            TEntity entityToDelete = _dbSet.Find(id);
+            Delete(entityToDelete);
+        }
+
+        public override void Delete(TEntity entity)
+        {
+            if (_dbContext.Entry(entity).State == EntityState.Detached)
+            {
+                _dbSet.Attach(entity);
+            }
+            _dbSet.Remove(entity);
+        }
+
+        public override void Delete(Expression<Func<TEntity, bool>> predicate)
+        {
+            IQueryable<TEntity> entitiesToDelete = Filter(predicate);
+            foreach (TEntity entity in entitiesToDelete)
+            {
+                if (_dbContext.Entry(entity).State == EntityState.Detached)
+                {
+                    _dbSet.Attach(entity);
+                }
+                _dbSet.Remove(entity);
+            }
+        }
+
+        public override void Update(TEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentException("Cannot update a null entity.");
+            }
+
+            var entry = _dbContext.Entry<TEntity>(entity);
+
+            // Retreive the Id through reflection
+            var pkey = entity.GetType().GetProperty("Id").GetValue(entity, null);
+
+            if (entry.State == EntityState.Detached)
+            {
+                var set = _dbContext.Set<TEntity>();
+                TEntity attachedEntity = set.Find(pkey);  // You need to have access to key
+                if (attachedEntity != null)
+                {
+                    var attachedEntry = _dbContext.Entry(attachedEntity);
+                    attachedEntry.CurrentValues.SetValues(entity);
+                }
+                else
+                {
+                    entry.State = EntityState.Modified; // This should attach entity
+                }
+            }
+//            _dbSet.Local.Clear();
+//            _dbSet.Attach(entity);
+//            _dbContext.Entry(entity).State = EntityState.Modified;
+        }
+
+        #endregion
 	}
 }

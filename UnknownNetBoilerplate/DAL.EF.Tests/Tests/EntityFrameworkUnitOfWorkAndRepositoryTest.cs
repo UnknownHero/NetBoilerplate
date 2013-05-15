@@ -30,7 +30,7 @@ namespace DAL.EF.Tests.Tests
             var id = Guid.NewGuid();
             var repo = _target.GetRepository<FakeEntity, Guid>();
 
-            repo.Insert(new FakeEntity
+            repo.Create(new FakeEntity
                 {
                     Id = id,
                     Name = "Hello"
@@ -56,7 +56,7 @@ namespace DAL.EF.Tests.Tests
                     Name = "Hello"
                 };
 
-            repo.Insert(entity);
+            repo.Create(entity);
 
             _target.Commit();
 
@@ -78,7 +78,7 @@ namespace DAL.EF.Tests.Tests
                 Name = "Hello"
             };
 
-            repo.Insert(entity);
+            repo.Create(entity);
 
 //            _target.Commit();
 
@@ -100,7 +100,7 @@ namespace DAL.EF.Tests.Tests
                 Name = "Hello"
             };
 
-            repo.Insert(entity);
+            repo.Create(entity);
             _target.Commit();
 
             var entity2 = new FakeEntity
@@ -116,6 +116,58 @@ namespace DAL.EF.Tests.Tests
 
             Assert.AreNotEqual(item, null);
             Assert.AreEqual(item.Name, "UnHello");
+        }
+
+        [Test]
+        public void UnitOfWOrk_Repository_Remove()
+        {
+            var id = Guid.NewGuid();
+            var repo = _target.GetRepository<FakeEntity, Guid>();
+
+            var entity = new FakeEntity
+            {
+                Id = id,
+                Name = "Hello"
+            };
+
+            repo.Create(entity);
+            _target.Commit();
+
+
+
+            repo.Delete(entity);
+            _target.Commit();
+
+            var item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
+
+            Assert.AreEqual(item,null); 
+        }
+
+        [Test]
+        public void UnitOfWOrk_Repository_Transaction()
+        {
+            var id = Guid.NewGuid();
+            var repo = _target.GetRepository<FakeEntity, Guid>();
+
+            var entity = new FakeEntity
+            {
+                Id = id,
+                Name = "Hello"
+            };
+
+            var trans = _target.BeginTransaction();
+            
+            repo.Create(entity);
+             
+             
+            _target.Commit();
+
+
+ 
+
+            var item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
+
+            Assert.AreEqual(item, null);
         }
 
         

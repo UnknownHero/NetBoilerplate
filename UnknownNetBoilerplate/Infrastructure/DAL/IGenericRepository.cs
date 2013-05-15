@@ -2,51 +2,41 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Infrastructure.Domain;
 
 namespace Infrastructure.DAL
 {
-    /// <summary>
-    /// Generic repository interface (DDD) for reading and writing domain entities to a storage.
-    /// </summary>
-    /// <typeparam name="TEntity">Domain entity.</typeparam>
-    /// <typeparam name="TPrimaryKey">Type of the primary key.</typeparam>
-    public interface IGenericRepository<TEntity, TPrimaryKey> where TEntity : class
+
+    public abstract class IGenericRepository<TEntity, TPrimaryKey> where TEntity : Entity<TPrimaryKey>
     {
-        /// <summary>
-        /// Inserts entity to the storage.
-        /// </summary>
-        void Insert(TEntity entity);
+        public virtual int Count { get; private set; }
 
-        /// <summary>
-        /// Updates entity in the storage.
-        /// </summary>
-        void Update(TEntity entity);
+        public abstract IQueryable<TEntity> All();
 
-        /// <summary>
-        /// Deletes entity in the storage.
-        /// </summary>
-        void Delete(TEntity entity);
+        public abstract IQueryable<TEntity> AsNoTracking();
 
-        /// <summary>
-        /// Gets entity from the storage by it's Id.
-        /// </summary>
-        TEntity GetById(TPrimaryKey id);
+        public abstract TEntity GetById(TPrimaryKey id);
 
-        /// <summary>
-        /// Gets all entities of the type from the storage. 
-        /// </summary>
-        IList<TEntity> GetAll();
+        public abstract IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "");
 
-        IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
-                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-                                string includeProperties = "");
+        public abstract IQueryable<TEntity> Filter(Expression<Func<TEntity, bool>> predicate);
 
-        /// <summary>
-        /// Gets specification interface for complex searching for an entity or entities.
-        /// </summary>
-        /// <typeparam name="TSpecification">Concrete specification that will be resolved
-        /// and initialized with underlying unit of work instance. This ensures fluent 
-        /// and strongly typed way of connecting repository (uow) and specifications.</typeparam>
-        TSpecification Specify<TSpecification>() where TSpecification : class, ISpecification<TEntity>;
+        public abstract IQueryable<TEntity> Filter(Expression<Func<TEntity, bool>> filter, out int total, int index = 0, int size = 50);
+
+        public abstract bool Contains(Expression<Func<TEntity, bool>> predicate);
+
+        public abstract TEntity Find(params object[] keys);
+
+        public abstract TEntity Find(Expression<Func<TEntity, bool>> predicate);
+
+        public abstract TEntity Create(TEntity entity);
+
+        public abstract void Delete(TPrimaryKey id);
+
+        public abstract void Delete(TEntity entity);
+
+        public abstract void Delete(Expression<Func<TEntity, bool>> predicate);
+
+        public abstract void Update(TEntity entity);
     }
 }

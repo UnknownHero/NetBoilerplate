@@ -9,13 +9,13 @@ namespace DAL.EF
     /// </summary>
     public class EntityFrameworkTransaction : ITransaction
     {
-        public EntityFrameworkTransaction(EntityFrameworkUnitOfWork unitOfWork)
+        public EntityFrameworkTransaction(IUnitOfWork unitOfWork)
         {
             this.UnitOfWork = unitOfWork;
             this.TransactionScope = new TransactionScope();
         }
 
-        protected EntityFrameworkUnitOfWork UnitOfWork { get; private set; }
+        protected IUnitOfWork UnitOfWork { get; private set; }
 
         protected TransactionScope TransactionScope { get; private set; }
 
