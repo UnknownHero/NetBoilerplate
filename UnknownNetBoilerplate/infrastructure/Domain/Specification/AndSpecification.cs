@@ -16,10 +16,8 @@ namespace Infrastructure.Domain.Specification
          
         public override Expression<Func<TEntity, bool>> GetExpression()
         {
-            var first = Spec1.GetExpression();
-            var second = Spec2.GetExpression();
-
-            return it => first.Compile().Invoke(it) && second.Compile().Invoke(it);
+            
+            return it => Spec1.GetExpression().Compile().Invoke(it) && Spec2.GetExpression().Compile().Invoke(it);
         }
     }
 }

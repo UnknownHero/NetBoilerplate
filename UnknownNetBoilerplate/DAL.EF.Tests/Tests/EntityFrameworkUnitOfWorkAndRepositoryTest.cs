@@ -2,6 +2,7 @@
 using System.Data.Common;
 using System.Linq;
 using DAL.EF.Tests.Fakes;
+using Extensions;
 using Infrastructure.DAL;
 using NUnit.Framework;
 
@@ -144,35 +145,79 @@ namespace DAL.EF.Tests.Tests
         }
 
         [Test]
+        [Ignore]
         public void UnitOfWOrk_Repository_Transaction()
+        {
+//            var id = Guid.NewGuid();
+//            var repo = _target.GetRepository<FakeEntity, Guid>();
+//
+//            var entity = new FakeEntity
+//            {
+//                Id = id,
+//                Name = "Hello"
+//            };
+//
+//            var trans = _target.BeginTransaction();
+//            
+//            repo.Create(entity);
+//             
+//             
+//            _target.Commit();
+//
+//
+// 
+//
+//            var item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
+//
+//            Assert.AreEqual(item, null);
+        }
+
+
+        [Test]
+        public void UnitOfWOrk_Repository_Simple_Specification_Test()
         {
             var id = Guid.NewGuid();
             var repo = _target.GetRepository<FakeEntity, Guid>();
 
-            var entity = new FakeEntity
+            repo.Create(new FakeEntity
             {
                 Id = id,
                 Name = "Hello"
-            };
+            });
 
-            var trans = _target.BeginTransaction();
-            
-            repo.Create(entity);
-             
-             
             _target.Commit();
 
+            var expression = new FakeSpecificationItHelloUser().GetExpression();
 
- 
+            var item = _target.GetRepository<FakeEntity, Guid>().Get(expression).First();
 
-            var item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
+            Assert.AreEqual(item.Name, "Hello");
 
-            Assert.AreEqual(item, null);
         }
 
+        [Test]
+        public void UnitOfWOrk_Repository_Composite_Specification_Test()
+        {
+            var id = Guid.NewGuid();
+            var repo = _target.GetRepository<FakeEntity, Guid>();
+
+            repo.Create(new FakeEntity
+            {
+                Id = id,
+                Name = "Hello"
+            });
+
+            _target.Commit();
+
+           var spec = new FakeSpecificationItHelloUser().And( new FakeSpecificationItUserWithName("Hello") );
+
+
+           var item = _target.GetRepository<FakeEntity, Guid>().Get(spec.IsSatisfiedBy).FirstOrDefault();
+
+             Assert.AreEqual(item.Name, "Hello");
+
+        }
         
        
     }
-
-        
 }
