@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Infrastructure.Domain;
+using Infrastructure.Domain; 
 
 namespace Infrastructure.DAL
 {
@@ -18,7 +18,7 @@ namespace Infrastructure.DAL
         public abstract TEntity GetById(TPrimaryKey id);
 
         public abstract IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "");
-
+          
         public abstract IQueryable<TEntity> Filter(Expression<Func<TEntity, bool>> predicate);
 
         public abstract IQueryable<TEntity> Filter(Expression<Func<TEntity, bool>> filter, out int total, int index = 0, int size = 50);

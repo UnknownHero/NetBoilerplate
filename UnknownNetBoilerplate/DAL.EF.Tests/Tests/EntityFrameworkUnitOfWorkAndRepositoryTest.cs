@@ -1,13 +1,42 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using DAL.EF.Tests.Fakes;
-using Extensions;
+using System.Linq.Expressions;
+using DAL.EF.Tests.Fakes; 
 using Infrastructure.DAL;
+using Infrastructure.Tests.Domain.Fakes;
 using NUnit.Framework;
+ 
 
 namespace DAL.EF.Tests.Tests
 {
+
+    public class ParameterRebinder : ExpressionVisitor
+    {
+        private readonly Dictionary<ParameterExpression, ParameterExpression> map;
+
+        public ParameterRebinder(Dictionary<ParameterExpression, ParameterExpression> map)
+        {
+            this.map = map ?? new Dictionary<ParameterExpression, ParameterExpression>();
+        }
+
+        public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map, Expression exp)
+        {
+            return new ParameterRebinder(map).Visit(exp);
+        }
+
+        protected override Expression VisitParameter(ParameterExpression p)
+        {
+            ParameterExpression replacement;
+            if (map.TryGetValue(p, out replacement))
+            {
+                p = replacement;
+            }
+            return base.VisitParameter(p);
+        }
+    }
+
     [TestFixture]
     public class EntityFrameworkUnitOfWorkAndRepositoryTest
     {
@@ -182,16 +211,26 @@ namespace DAL.EF.Tests.Tests
             repo.Create(new FakeEntity
             {
                 Id = id,
-                Name = "Hello"
+                Name = FakeNames.Ura
             });
 
             _target.Commit();
 
-            var expression = new FakeSpecificationItHelloUser().GetExpression();
+            repo.Create(new FakeEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = FakeNames.Misha
+            });
 
-            var item = _target.GetRepository<FakeEntity, Guid>().Get(expression).First();
+            _target.Commit();
 
-            Assert.AreEqual(item.Name, "Hello");
+
+            var expression = new UraSpec().is_satisfied_by();
+
+            var items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
+
+            Assert.AreEqual(items.Count(), 1);
+            Assert.AreEqual(items.First().Name, FakeNames.Ura);
 
         }
 
@@ -204,17 +243,26 @@ namespace DAL.EF.Tests.Tests
             repo.Create(new FakeEntity
             {
                 Id = id,
-                Name = "Hello"
+                Name = FakeNames.Ura
             });
 
             _target.Commit();
 
-           var spec = new FakeSpecificationItHelloUser().And( new FakeSpecificationItUserWithName("Hello") );
+            repo.Create(new FakeEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = FakeNames.Misha
+            });
+
+            _target.Commit();
 
 
-           var item = _target.GetRepository<FakeEntity, Guid>().Get(spec.IsSatisfiedBy).FirstOrDefault();
+            var expression = new UraSpec().And(new MishaSpec().Not()).is_satisfied_by();
 
-             Assert.AreEqual(item.Name, "Hello");
+            var items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
+
+            Assert.AreEqual(items.Count(), 1);
+            Assert.AreEqual(items.First().Name, FakeNames.Ura);
 
         }
         

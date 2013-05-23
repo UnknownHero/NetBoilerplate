@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Data.Entity;
 using System.Reflection;
 using FakeDbSet;
+using Infrastructure.Tests.Domain.Fakes;
 
 namespace DAL.EF.Tests.Fakes
 {

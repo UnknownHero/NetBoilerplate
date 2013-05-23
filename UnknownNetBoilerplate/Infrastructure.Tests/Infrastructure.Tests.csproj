@@ -46,11 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\Fakes\FakeSpecificationIsSasha.cs" />
-    <Compile Include="Domain\Fakes\FakeSpecificationIsMisha.cs" />
     <Compile Include="Domain\Fakes\FakeEntity.cs" />
     <Compile Include="Domain\Fakes\FakeNames.cs" />
-    <Compile Include="Domain\Fakes\FakeSpecificationIsUra.cs" />
+    <Compile Include="Domain\Fakes\MishaSpec.cs" />
+    <Compile Include="Domain\Fakes\SashaSpec.cs" />
+    <Compile Include="Domain\Fakes\UraSpec.cs" />
     <Compile Include="Domain\Tests\SpecificationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\MapperTest.cs" />

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using DAL.EF.Exceptions;
 using Infrastructure.DAL;
-using Infrastructure.Domain;
+using Infrastructure.Domain; 
 
 namespace DAL.EF.GenericRepository
 {
@@ -72,6 +72,8 @@ namespace DAL.EF.GenericRepository
                 return query.AsQueryable();
             }
         }
+
+       
 
         public override IQueryable<TEntity> Filter(Expression<Func<TEntity, bool>> predicate)
         {
