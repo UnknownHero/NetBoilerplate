@@ -58,12 +58,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fakes\FakeContext.cs" />
-    <Compile Include="Fakes\FakeDbSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestBootstrapper.cs" />
     <Compile Include="Tests\EntityFrameworkUnitOfWorkAndRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bootstrapper\Bootstrapper.csproj">
+      <Project>{9B029549-926A-4311-B740-986F16A920B3}</Project>
+      <Name>Bootstrapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DAL.EF\DAL.EF.csproj">
       <Project>{BE83C039-9AE0-459C-BAC5-3845E7D72C44}</Project>
       <Name>DAL.EF</Name>
@@ -75,6 +78,10 @@
     <ProjectReference Include="..\infrastructure\Infrastructure.csproj">
       <Project>{4C18675E-B42D-43F4-9480-52001CD65E81}</Project>
       <Name>Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Infrastructure\Test.Infrastructure.csproj">
+      <Project>{E076A9A4-4589-4EE6-9F43-D38B11F59EE8}</Project>
+      <Name>Test.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.EF;
+﻿using DAL.EF;
 using Infrastructure.Bootstrapper;
 using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
 
-namespace Bootstrapper.Local
+namespace Bootstrapper.Test
 {
-    public class UnityLocalBootstrapper : CommonBootstrapper
+    public class UnityTestBootstrapper : CommonBootstrapper
     {
         protected override IServiceLocator CreateServiceLocator()
         {
@@ -21,7 +16,7 @@ namespace Bootstrapper.Local
 
         private static void RegisterTypes(IUnityContainer container)
         {
-            container.RegisterType<IDbContextGenerator, LocalDbContextGenerator>();
+            container.RegisterType<IDbContextGenerator, TestDbContextGenerator>();
         }
     }
 }

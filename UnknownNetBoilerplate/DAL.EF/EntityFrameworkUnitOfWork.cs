@@ -22,22 +22,6 @@ namespace DAL.EF
         {
             DbContext.SaveChanges();
         }
-
-        public ITransaction BeginTransaction()
-        {
-            return new EntityFrameworkTransaction(this);
-        }
-
-        public void EndTransaction(ITransaction transaction)
-        {
-            if (transaction != null)
-            {
-                (transaction).Dispose();
-                transaction = null;
-            }
-        }
-
-      
          
         public IGenericRepository<TEntity, TPkey> GetRepository<TEntity, TPkey>() where TEntity : Entity<TPkey>
         {

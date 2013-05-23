@@ -1,7 +1,7 @@
 ﻿ 
 using System;
-using Infrastructure.Tests.Domain.Fakes; 
 using NUnit.Framework;
+using Test.Infrastructure.Domain.Fakes;
 
 
 namespace Infrastructure.Tests.Domain.Tests
@@ -16,6 +16,9 @@ namespace Infrastructure.Tests.Domain.Tests
         [SetUp]
         public void Init()
         {
+
+            new TestBootstrapper().Run();
+
             _uraSpec = new UraSpec();
             _mishaSpec = new MishaSpec();
             _sahsaSpec = new SashaSpec();

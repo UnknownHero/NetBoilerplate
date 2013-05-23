@@ -2,6 +2,7 @@
 {
     public enum BootstrapTypes
     {
-        Local
+        Local,
+        Test
     }
 }
