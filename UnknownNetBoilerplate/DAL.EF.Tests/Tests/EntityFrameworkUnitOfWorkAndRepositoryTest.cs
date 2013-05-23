@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using DAL.EF.Tests.Fakes; 
 using Infrastructure.DAL;
+using Infrastructure.Domain.Specification;
 using Infrastructure.Tests.Domain.Fakes;
 using NUnit.Framework;
  
@@ -225,7 +226,7 @@ namespace DAL.EF.Tests.Tests
             _target.Commit();
 
 
-            var expression = new UraSpec().is_satisfied_by();
+            var expression = new UraSpec().IsSatisfied();
 
             var items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
 
@@ -256,14 +257,19 @@ namespace DAL.EF.Tests.Tests
 
             _target.Commit();
 
+            var uraSpec = new UraSpec();
+            var mishaSpec = new MishaSpec();
+            var sashaSpec = new SashaSpec();
 
-            var expression = new UraSpec().And(new MishaSpec().Not()).is_satisfied_by();
+            var expression = uraSpec.And(mishaSpec).Negated(sashaSpec).IsSatisfied();
 
             var items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
 
-            Assert.AreEqual(items.Count(), 1);
-            Assert.AreEqual(items.First().Name, FakeNames.Ura);
+            Assert.AreEqual(items.Count(), 2);
 
+            var uraFromDb = _target.GetRepository<FakeEntity, Guid>().Get( new LambdaSpecification<FakeEntity>(it=> it.Id == id).IsSatisfied() ).First();
+
+            Assert.AreEqual(uraFromDb.Name, FakeNames.Ura);
         }
         
        

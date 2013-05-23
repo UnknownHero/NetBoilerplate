@@ -2,7 +2,7 @@
 using System;
 using Infrastructure.Tests.Domain.Fakes; 
 using NUnit.Framework;
- 
+
 
 namespace Infrastructure.Tests.Domain.Tests
 {
@@ -32,11 +32,11 @@ namespace Infrastructure.Tests.Domain.Tests
                     Name = FakeNames.Ura
                 };
 
-            var trueResult = _uraSpec.is_satisfied_by(entity);
+            var trueResult = _uraSpec.IsSatisfied(entity);
             entity.Name = FakeNames.Misha;
-            var falseResult1 = _uraSpec.is_satisfied_by(entity);
+            var falseResult1 = _uraSpec.IsSatisfied(entity);
             entity.Name = FakeNames.Sasha;
-            var falseResult2 = _uraSpec.is_satisfied_by(entity);
+            var falseResult2 = _uraSpec.IsSatisfied(entity);
 
             Assert.AreEqual(true, trueResult);
             Assert.AreEqual(false, falseResult1);
@@ -56,13 +56,13 @@ namespace Infrastructure.Tests.Domain.Tests
 
 
 
-            Assert.AreEqual(true, _uraSpec.And(_sahsaSpec.Not()).is_satisfied_by(entity));
+            Assert.AreEqual(true, _uraSpec.And(_sahsaSpec).Negated(_mishaSpec).IsSatisfied(entity));
 
-            Assert.AreEqual(false, _sahsaSpec.Or(_mishaSpec).is_satisfied_by(entity));
+            Assert.AreEqual(false, _sahsaSpec.Or(_mishaSpec).IsSatisfied(entity));
 
-            Assert.AreEqual(false, _sahsaSpec.Or(_uraSpec.Not()).is_satisfied_by(entity));
+            Assert.AreEqual(false, _sahsaSpec.Or(_uraSpec).Negated(_mishaSpec).IsSatisfied(entity));
 
-            Assert.AreEqual(true, _sahsaSpec.Or(_uraSpec).is_satisfied_by(entity)); 
+            Assert.AreEqual(true, _sahsaSpec.Or(_mishaSpec).Negated(_uraSpec).IsSatisfied(entity)); 
         }
 
         [Test]
@@ -73,14 +73,11 @@ namespace Infrastructure.Tests.Domain.Tests
                 Id = Guid.NewGuid(),
                 Name = FakeNames.Ura
             };
+             
+            var allSpec = _uraSpec.Or(_sahsaSpec).And(_mishaSpec).Negated(_mishaSpec);
 
-   
-
-            var allSpec = _uraSpec.Or(_sahsaSpec).And(_mishaSpec.Not());
-
-            Assert.AreEqual(true,allSpec.is_satisfied_by(entity));
-
-
+            Assert.AreEqual(true, allSpec.IsSatisfied(entity));
+             
         }
     }
 
