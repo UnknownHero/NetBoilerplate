@@ -7,7 +7,7 @@ namespace Bootstrapper.Test
 {
     public class UnityTestBootstrapper : CommonBootstrapper
     {
-        protected override IServiceLocator CreateServiceLocator()
+        protected override UnityServiceLocator CreateServiceLocator()
         {
             var container = new UnityContainer();
             RegisterTypes(container);

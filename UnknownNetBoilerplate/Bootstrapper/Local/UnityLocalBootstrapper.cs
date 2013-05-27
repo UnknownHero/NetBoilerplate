@@ -12,7 +12,7 @@ namespace Bootstrapper.Local
 {
     public class UnityLocalBootstrapper : CommonBootstrapper
     {
-        protected override IServiceLocator CreateServiceLocator()
+        protected override UnityServiceLocator CreateServiceLocator()
         {
             var container = new UnityContainer();
             RegisterTypes(container);
