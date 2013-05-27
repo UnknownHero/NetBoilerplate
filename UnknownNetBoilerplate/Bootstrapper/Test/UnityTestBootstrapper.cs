@@ -1,7 +1,7 @@
 ﻿using DAL.EF;
 using Infrastructure.Bootstrapper;
-using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
+ 
 
 namespace Bootstrapper.Test
 {

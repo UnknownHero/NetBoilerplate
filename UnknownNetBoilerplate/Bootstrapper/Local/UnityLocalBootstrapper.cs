@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.EF;
 using Infrastructure.Bootstrapper;
-using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
+using Microsoft.Practices.ServiceLocation;
+
 
 namespace Bootstrapper.Local
 {
