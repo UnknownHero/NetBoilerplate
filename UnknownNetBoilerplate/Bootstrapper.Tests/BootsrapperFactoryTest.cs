@@ -1,9 +1,8 @@
-﻿using Bootstrapper;
-using Infrastructure.Bootstrapper;
+﻿using Infrastructure.Bootstrapper;
 using Infrastructure.Root;
 using NUnit.Framework;
 
-namespace Infrastructure.Tests.Utility
+namespace Bootstrapper.Tests
 {
     [TestFixture]
     public class BootsrapperFactoryTest
