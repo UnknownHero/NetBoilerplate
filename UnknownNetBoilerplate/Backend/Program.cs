@@ -15,7 +15,7 @@ namespace Backend
             Console.WriteLine("Cooming soon...");
             Console.ReadKey();
 
-            var apps = ApplicationContainer.Container.GetInstance<IBackendApplications>();
+//            var apps = ApplicationContainer.Container.GetInstance<IBackendApplications>();
         }
     }
 }
