@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 using Infrastructure.Domain.Specification;
- 
 
-namespace Infrastructure.Tests.Domain.Fakes
+namespace Test.Infrastructure.Domain.Fakes
 {
     public class SashaSpec : Specification<FakeEntity>
     {

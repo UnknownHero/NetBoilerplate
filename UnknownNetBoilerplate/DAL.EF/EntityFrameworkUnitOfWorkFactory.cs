@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using Infrastructure.DAL;
+using Infrastructure.Root;
 
 namespace DAL.EF
 {
@@ -10,57 +11,31 @@ namespace DAL.EF
     /// </summary>
     public class EntityFrameworkUnitOfWorkFactory : IUnitOfWorkFactory
     {
-        private DbContext _dbContext;
-
-        public EntityFrameworkUnitOfWorkFactory(string connectionString, DbModel dbModel)
-        {
-            ConnectionString = connectionString;
-            DbModel = dbModel;
-        }
-
-        public EntityFrameworkUnitOfWorkFactory( DbContext dbContext)
-        {
        
-            _dbContext = dbContext;
+
+        public EntityFrameworkUnitOfWorkFactory()
+        {
+        
         }
 
-        protected string ConnectionString { get; private set; }
-
-        protected DbModel DbModel { get; private set; }
-
+      
         public IUnitOfWork BeginUnitOfWork()
         {
-            CreateDbContext();
             return new EntityFrameworkUnitOfWork(
-                _dbContext
+                ApplicationContainer.Container.GetInstance<IDbContextGenerator>().GetContext()
                 );
         }
 
         public void EndUnitOfWork(IUnitOfWork unitOfWork)
         {
-            var linqToSqlUnitOfWork = unitOfWork as EntityFrameworkUnitOfWork;
-            if (linqToSqlUnitOfWork != null)
-            {
-                linqToSqlUnitOfWork.Dispose();
-                linqToSqlUnitOfWork = null;
-            }
+            unitOfWork.Dispose();
         }
 
         public void Dispose()
         {
-            ConnectionString = null;
-            DbModel = null;
+           
         }
 
-        private void CreateDbContext()
-        {
-            if (_dbContext == null && DbModel != null)
-            {
-                _dbContext = new DbContext(
-                    ConnectionString
-                    , DbModel.Compile()
-                    );
-            }
-        }
+         
     }
 }

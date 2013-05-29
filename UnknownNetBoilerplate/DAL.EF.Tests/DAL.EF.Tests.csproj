@@ -11,6 +11,8 @@
     <AssemblyName>DAL.EF.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,6 +42,18 @@
     <Reference Include="FakeDbSet">
       <HintPath>..\packages\FakeDbSet.1.4.0.0\lib\net40\FakeDbSet.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Unity.3.0.1304.0\lib\Net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\packages\Unity.3.0.1304.0\lib\Net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
     <Reference Include="NMemory">
       <HintPath>..\packages\NMemory.1.0.0-beta7\lib\net45\NMemory.dll</HintPath>
     </Reference>
@@ -58,12 +72,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fakes\FakeContext.cs" />
-    <Compile Include="Fakes\FakeDbSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestBootstrapper.cs" />
     <Compile Include="Tests\EntityFrameworkUnitOfWorkAndRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bootstrapper\Bootstrapper.csproj">
+      <Project>{9B029549-926A-4311-B740-986F16A920B3}</Project>
+      <Name>Bootstrapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DAL.EF\DAL.EF.csproj">
       <Project>{BE83C039-9AE0-459C-BAC5-3845E7D72C44}</Project>
       <Name>DAL.EF</Name>
@@ -76,12 +93,17 @@
       <Project>{4C18675E-B42D-43F4-9480-52001CD65E81}</Project>
       <Name>Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Test.Infrastructure\Test.Infrastructure.csproj">
+      <Project>{E076A9A4-4589-4EE6-9F43-D38B11F59EE8}</Project>
+      <Name>Test.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,85 +1,98 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
-using DAL.EF.Tests.Fakes; 
 using Infrastructure.DAL;
 using Infrastructure.Domain.Specification;
-using Infrastructure.Tests.Domain.Fakes;
 using NUnit.Framework;
- 
+using Test.Infrastructure.Domain.Fakes;
 
 namespace DAL.EF.Tests.Tests
 {
-
-    public class ParameterRebinder : ExpressionVisitor
-    {
-        private readonly Dictionary<ParameterExpression, ParameterExpression> map;
-
-        public ParameterRebinder(Dictionary<ParameterExpression, ParameterExpression> map)
-        {
-            this.map = map ?? new Dictionary<ParameterExpression, ParameterExpression>();
-        }
-
-        public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map, Expression exp)
-        {
-            return new ParameterRebinder(map).Visit(exp);
-        }
-
-        protected override Expression VisitParameter(ParameterExpression p)
-        {
-            ParameterExpression replacement;
-            if (map.TryGetValue(p, out replacement))
-            {
-                p = replacement;
-            }
-            return base.VisitParameter(p);
-        }
-    }
-
     [TestFixture]
     public class EntityFrameworkUnitOfWorkAndRepositoryTest
     {
- 
-
         [SetUp]
         public void Init()
         {
-            DbConnection connection = Effort.DbConnectionFactory.CreateTransient();
+            new  TestBootstrapper().Run();
 
-            var factory = new EntityFrameworkUnitOfWorkFactory(new FakeContext(connection));
+            _factory = new EntityFrameworkUnitOfWorkFactory();
 
-            _target = factory.BeginUnitOfWork();
+            _target = _factory.BeginUnitOfWork();
         }
 
         private IUnitOfWork _target;
+        private EntityFrameworkUnitOfWorkFactory _factory;
 
         [Test]
-        public void UnitOfWOrk_Repository_Save_GetById_Test()
+        public void UnitOfWOrk_Repository_Composite_Specification_Test()
         {
-            var id = Guid.NewGuid();
-            var repo = _target.GetRepository<FakeEntity, Guid>();
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
 
             repo.Create(new FakeEntity
                 {
                     Id = id,
-                    Name = "Hello"
+                    Name = FakeNames.Ura
                 });
 
             _target.Commit();
 
-            var item = _target.GetRepository<FakeEntity, Guid>().GetById(id);
+            repo.Create(new FakeEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Name = FakeNames.Misha
+                });
 
-            Assert.AreEqual(item.Name, "Hello");
+            _target.Commit();
 
+            var uraSpec = new UraSpec();
+            var mishaSpec = new MishaSpec();
+            var sashaSpec = new SashaSpec();
+
+            Expression<Func<FakeEntity, bool>> expression = uraSpec.And(mishaSpec).Negated(sashaSpec).IsSatisfied();
+
+            IQueryable<FakeEntity> items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
+
+            Assert.AreEqual(items.Count(), 2);
+
+            FakeEntity uraFromDb =
+                _target.GetRepository<FakeEntity, Guid>()
+                       .Get(new LambdaSpecification<FakeEntity>(it => it.Id == id).IsSatisfied())
+                       .First();
+
+            Assert.AreEqual(uraFromDb.Name, FakeNames.Ura);
+        }
+
+        [Test]
+        public void UnitOfWOrk_Repository_Remove()
+        {
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
+
+            var entity = new FakeEntity
+                {
+                    Id = id,
+                    Name = "Hello"
+                };
+
+            repo.Create(entity);
+            _target.Commit();
+
+
+            repo.Delete(entity);
+            _target.Commit();
+
+            FakeEntity item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
+
+            Assert.AreEqual(item, null);
         }
 
         [Test]
         public void UnitOfWOrk_Repository_Save_GetByAttribute_Test()
         {
-            var id = Guid.NewGuid();
-            var repo = _target.GetRepository<FakeEntity, Guid>();
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
 
             var entity = new FakeEntity
                 {
@@ -91,187 +104,140 @@ namespace DAL.EF.Tests.Tests
 
             _target.Commit();
 
-            var item = repo.Get(it => it.Name == entity.Name).FirstOrDefault();
+            FakeEntity item = repo.Get(it => it.Name == entity.Name).FirstOrDefault();
 
             Assert.AreNotEqual(item, null);
             if (item != null) Assert.AreEqual(item.Name, "Hello");
         }
 
         [Test]
-        public void UnitOfWOrk_Repository_WithoutCommit()
+        public void UnitOfWOrk_Repository_Save_GetById_Test()
         {
-            var id = Guid.NewGuid();
-            var repo = _target.GetRepository<FakeEntity, Guid>();
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
 
-            var entity = new FakeEntity
-            {
-                Id = id,
-                Name = "Hello"
-            };
+            repo.Create(new FakeEntity
+                {
+                    Id = id,
+                    Name = "Hello"
+                });
 
-            repo.Create(entity);
-
-//            _target.Commit();
-
-            var item = _target.GetRepository<FakeEntity, Guid>().Get(it => it.Name == entity.Name).FirstOrDefault();
-
-            Assert.AreEqual(item, null);
-            
-        }
-
-        [Test]
-        public void UnitOfWOrk_Repository_Update()
-        {
-            var id = Guid.NewGuid();
-            var repo = _target.GetRepository<FakeEntity, Guid>();
-
-            var entity = new FakeEntity
-            {
-                Id = id,
-                Name = "Hello"
-            };
-
-            repo.Create(entity);
             _target.Commit();
 
-            var entity2 = new FakeEntity
-            {
-                Id = id,
-                Name = "UnHello"
-            };
+            FakeEntity item = _target.GetRepository<FakeEntity, Guid>().GetById(id);
 
-            repo.Update(entity2);
-            _target.Commit();
-
-            var item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
-
-            Assert.AreNotEqual(item, null);
-            Assert.AreEqual(item.Name, "UnHello");
-        }
-
-        [Test]
-        public void UnitOfWOrk_Repository_Remove()
-        {
-            var id = Guid.NewGuid();
-            var repo = _target.GetRepository<FakeEntity, Guid>();
-
-            var entity = new FakeEntity
-            {
-                Id = id,
-                Name = "Hello"
-            };
-
-            repo.Create(entity);
-            _target.Commit();
-
-
-
-            repo.Delete(entity);
-            _target.Commit();
-
-            var item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
-
-            Assert.AreEqual(item,null); 
-        }
-
-        [Test]
-        [Ignore]
-        public void UnitOfWOrk_Repository_Transaction()
-        {
-//            var id = Guid.NewGuid();
-//            var repo = _target.GetRepository<FakeEntity, Guid>();
-//
-//            var entity = new FakeEntity
-//            {
-//                Id = id,
-//                Name = "Hello"
-//            };
-//
-//            var trans = _target.BeginTransaction();
-//            
-//            repo.Create(entity);
-//             
-//             
-//            _target.Commit();
-//
-//
-// 
-//
-//            var item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
-//
-//            Assert.AreEqual(item, null);
+            Assert.AreEqual(item.Name, "Hello");
         }
 
 
         [Test]
         public void UnitOfWOrk_Repository_Simple_Specification_Test()
         {
-            var id = Guid.NewGuid();
-            var repo = _target.GetRepository<FakeEntity, Guid>();
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
 
             repo.Create(new FakeEntity
-            {
-                Id = id,
-                Name = FakeNames.Ura
-            });
+                {
+                    Id = id,
+                    Name = FakeNames.Ura
+                });
 
             _target.Commit();
 
             repo.Create(new FakeEntity
-            {
-                Id = Guid.NewGuid(),
-                Name = FakeNames.Misha
-            });
+                {
+                    Id = Guid.NewGuid(),
+                    Name = FakeNames.Misha
+                });
 
             _target.Commit();
 
 
-            var expression = new UraSpec().IsSatisfied();
+            Expression<Func<FakeEntity, bool>> expression = new UraSpec().IsSatisfied();
 
-            var items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
+            IQueryable<FakeEntity> items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
 
             Assert.AreEqual(items.Count(), 1);
             Assert.AreEqual(items.First().Name, FakeNames.Ura);
-
         }
 
         [Test]
-        public void UnitOfWOrk_Repository_Composite_Specification_Test()
+        public void UnitOfWOrk_Repository_Transaction()
         {
-            var id = Guid.NewGuid();
-            var repo = _target.GetRepository<FakeEntity, Guid>();
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
 
-            repo.Create(new FakeEntity
-            {
-                Id = id,
-                Name = FakeNames.Ura
-            });
+            var entity = new FakeEntity
+                {
+                    Id = id,
+                    Name = "Hello"
+                };
 
-            _target.Commit();
+            IUnitOfWork transUoW = _factory.BeginUnitOfWork();
+            IGenericRepository<FakeEntity, Guid> transRepo = transUoW.GetRepository<FakeEntity, Guid>();
 
-            repo.Create(new FakeEntity
-            {
-                Id = Guid.NewGuid(),
-                Name = FakeNames.Misha
-            });
+            transRepo.Create(entity);
 
-            _target.Commit();
 
-            var uraSpec = new UraSpec();
-            var mishaSpec = new MishaSpec();
-            var sashaSpec = new SashaSpec();
+            FakeEntity nullEntity = _target.GetRepository<FakeEntity, Guid>().GetById(id);
+            FakeEntity NotNullEntity = transRepo.GetById(id);
 
-            var expression = uraSpec.And(mishaSpec).Negated(sashaSpec).IsSatisfied();
 
-            var items = _target.GetRepository<FakeEntity, Guid>().Get(expression);
-
-            Assert.AreEqual(items.Count(), 2);
-
-            var uraFromDb = _target.GetRepository<FakeEntity, Guid>().Get( new LambdaSpecification<FakeEntity>(it=> it.Id == id).IsSatisfied() ).First();
-
-            Assert.AreEqual(uraFromDb.Name, FakeNames.Ura);
+            Assert.AreEqual(nullEntity, null);
+            Assert.AreEqual(NotNullEntity.Name, entity.Name);
+             
         }
-        
-       
+
+        [Test]
+        public void UnitOfWOrk_Repository_Update()
+        {
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
+
+            var entity = new FakeEntity
+                {
+                    Id = id,
+                    Name = "Hello"
+                };
+
+            repo.Create(entity);
+            _target.Commit();
+
+            var entity2 = new FakeEntity
+                {
+                    Id = id,
+                    Name = "UnHello"
+                };
+
+            repo.Update(entity2);
+            _target.Commit();
+
+            FakeEntity item = repo.Get(it => it.Id == entity.Id).FirstOrDefault();
+
+            Assert.AreNotEqual(item, null);
+            Assert.AreEqual(item.Name, "UnHello");
+        }
+
+        [Test]
+        public void UnitOfWOrk_Repository_WithoutCommit()
+        {
+            Guid id = Guid.NewGuid();
+            IGenericRepository<FakeEntity, Guid> repo = _target.GetRepository<FakeEntity, Guid>();
+
+            var entity = new FakeEntity
+                {
+                    Id = id,
+                    Name = "Hello"
+                };
+
+            repo.Create(entity);
+
+//            _target.Commit();
+
+            FakeEntity item =
+                _target.GetRepository<FakeEntity, Guid>().Get(it => it.Name == entity.Name).FirstOrDefault();
+
+            Assert.AreEqual(item, null);
+        }
     }
 }

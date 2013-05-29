@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.EF;
 using Infrastructure.Bootstrapper;
-using Microsoft.Practices.ServiceLocation;
 using Microsoft.Practices.Unity;
+using Microsoft.Practices.ServiceLocation;
+
 
 namespace Bootstrapper.Local
 {
     public class UnityLocalBootstrapper : CommonBootstrapper
     {
-        protected override IServiceLocator CreateServiceLocator()
+        protected override UnityServiceLocator CreateServiceLocator()
         {
             var container = new UnityContainer();
             RegisterTypes(container);
@@ -20,7 +22,7 @@ namespace Bootstrapper.Local
 
         private static void RegisterTypes(IUnityContainer container)
         {
-//            container.RegisterType<ICustomer, GoldenCustomer>(typeof(ICustomer).FullName);
+            container.RegisterType<IDbContextGenerator, LocalDbContextGenerator>();
         }
     }
 }

@@ -1,16 +1,17 @@
 using Microsoft.Practices.ServiceLocation;
+using Microsoft.Practices.Unity;
 
 namespace Infrastructure.Bootstrapper
 {
     public abstract class CommonBootstrapper
     {
-        public IServiceLocator Locator;
+        public UnityServiceLocator Locator;
 
         protected CommonBootstrapper()
         {
             Locator = CreateServiceLocator();
         }
 
-        protected abstract IServiceLocator CreateServiceLocator();
+        protected abstract UnityServiceLocator CreateServiceLocator();
     } 
 }

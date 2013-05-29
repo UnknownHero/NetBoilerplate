@@ -15,6 +15,10 @@ namespace Bootstrapper
             {
                 return new LocalBootstrapper();
             }
+            else if (index == BootstrapTypes.Test)
+            {
+                return new TestBootstrapper();
+            }
             else
             {
                 throw new Exception("Unknown bootstrap type: " + index);

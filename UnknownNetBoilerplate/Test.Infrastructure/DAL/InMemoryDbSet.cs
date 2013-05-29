@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,14 +6,15 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using Infrastructure.Domain;
+using Test.Infrastructure.Domain.Fakes;
 
-namespace DAL.EF.Tests.Fakes
+namespace Test.Infrastructure.DAL
 {
-    internal class FakeDbSet<T> : IDbSet<T> where T : Entity<Guid>
+    internal class InMemoryDbSet<T> : IDbSet<T> where T : Entity<Guid>
     {
         private readonly HashSet<T> _data;
 
-        public FakeDbSet()
+        public InMemoryDbSet()
         {
             _data = new HashSet<T>();
         }

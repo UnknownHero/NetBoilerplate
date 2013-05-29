@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Tests.Domain.Fakes
+namespace Test.Infrastructure.Domain.Fakes
 {
     public static class FakeNames
     {

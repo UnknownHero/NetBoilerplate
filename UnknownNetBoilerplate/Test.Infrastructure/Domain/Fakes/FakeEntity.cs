@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using Infrastructure.Domain;
 
-namespace Infrastructure.Tests.Domain.Fakes
+namespace Test.Infrastructure.Domain.Fakes
 {
     public class FakeEntity : Entity<Guid>
     {
