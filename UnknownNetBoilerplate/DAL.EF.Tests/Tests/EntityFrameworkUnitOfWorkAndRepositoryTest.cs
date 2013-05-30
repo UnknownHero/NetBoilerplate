@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Bootstrapper;
 using Infrastructure.DAL;
 using Infrastructure.Domain.Specification;
 using NUnit.Framework;
@@ -14,7 +15,7 @@ namespace DAL.EF.Tests.Tests
         [SetUp]
         public void Init()
         {
-            new  TestBootstrapper().Run();
+            new  BootstrapperFactory().GetBoostrapper(BootstrapTypes.Test).Run();
 
             _factory = new EntityFrameworkUnitOfWorkFactory();
 
