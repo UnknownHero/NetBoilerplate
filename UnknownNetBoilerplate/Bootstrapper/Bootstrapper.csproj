@@ -35,9 +35,6 @@
     <Reference Include="Effort">
       <HintPath>..\packages\Effort.1.0.0-beta2\lib\net45\Effort.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\DAL.EF\bin\Debug\EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>False</Private>
