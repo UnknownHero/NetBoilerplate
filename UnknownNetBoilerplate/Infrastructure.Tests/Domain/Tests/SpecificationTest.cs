@@ -18,7 +18,7 @@ namespace Infrastructure.Tests.Domain.Tests
         public void Init()
         {
 
-            new BootstrapperFactory().GetBoostrapper(BootstrapTypes.Test).Run();
+            new BootstrapperFactory().GetBoostrapper(BootstrapTypes.UnitTest).Run();
 
             _uraSpec = new UraSpec();
             _mishaSpec = new MishaSpec();

@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBootstrapper.cs" />
+    <Compile Include="Tests\EFUOF_Transaction_tests.cs" />
     <Compile Include="Tests\EntityFrameworkUnitOfWorkAndRepositoryTest.cs" />
   </ItemGroup>
   <ItemGroup>

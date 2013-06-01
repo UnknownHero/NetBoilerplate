@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="DAL\InMemoryDbContext.cs" />
     <Compile Include="DAL\InMemoryDbSet.cs" />
+    <Compile Include="DAL\IntegrationDbContext.cs" />
     <Compile Include="Domain\Fakes\FakeEntity.cs" />
     <Compile Include="Domain\Fakes\FakeNames.cs" />
     <Compile Include="Domain\Fakes\MishaSpec.cs" />
@@ -67,6 +68,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DAL.EF\DAL.EF.csproj">
+      <Project>{BE83C039-9AE0-459C-BAC5-3845E7D72C44}</Project>
+      <Name>DAL.EF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\infrastructure\Infrastructure.csproj">
       <Project>{4C18675E-B42D-43F4-9480-52001CD65E81}</Project>
       <Name>Infrastructure</Name>

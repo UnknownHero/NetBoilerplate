@@ -4,18 +4,19 @@ using System;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Reflection;
+using DAL.EF;
 using Test.Infrastructure.Domain.Fakes;
 
 namespace Test.Infrastructure.DAL
 {
-    public class InMemoryDbContext : DbContext
+    public class InMemoryDbContext : DatabaseMap
     {
-        public InMemoryDbContext()
+        public InMemoryDbContext() : base()
         {
            
             // Set up your collections
             FakeEntity = new InMemoryDbSet<FakeEntity>();
-
+             
         }
 
         public InMemoryDbContext(DbConnection connection)
@@ -23,6 +24,12 @@ namespace Test.Infrastructure.DAL
         {
             FakeEntity = new InMemoryDbSet<FakeEntity>();
         }
+
+        public InMemoryDbContext(string dbConnection)
+            : base(dbConnection)
+      {
+          
+      }
 
         public IDbSet<FakeEntity> FakeEntity { get; set; }
 

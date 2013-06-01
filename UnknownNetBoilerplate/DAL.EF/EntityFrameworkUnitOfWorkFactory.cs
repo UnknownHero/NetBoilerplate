@@ -11,18 +11,22 @@ namespace DAL.EF
     /// </summary>
     public class EntityFrameworkUnitOfWorkFactory : IUnitOfWorkFactory
     {
-       
+        private DbContext _context;
 
         public EntityFrameworkUnitOfWorkFactory()
         {
-        
+           
+           
+            
         }
 
       
         public IUnitOfWork BeginUnitOfWork()
         {
+            _context = ApplicationContainer.Container.GetInstance<IDbContextGenerator>().GetContext();
+             
             return new EntityFrameworkUnitOfWork(
-                ApplicationContainer.Container.GetInstance<IDbContextGenerator>().GetContext()
+               _context
                 );
         }
 

@@ -3,6 +3,7 @@
     public enum BootstrapTypes
     {
         Local,
-        Test
+        UnitTest,
+        IntegrationTest
     }
 }

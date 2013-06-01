@@ -15,7 +15,7 @@ namespace DAL.EF.Tests.Tests
         [SetUp]
         public void Init()
         {
-            new  BootstrapperFactory().GetBoostrapper(BootstrapTypes.Test).Run();
+            new BootstrapperFactory().GetBoostrapper(BootstrapTypes.UnitTest).Run();
 
             _factory = new EntityFrameworkUnitOfWorkFactory();
 

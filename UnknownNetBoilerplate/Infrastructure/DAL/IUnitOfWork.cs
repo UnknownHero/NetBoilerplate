@@ -19,5 +19,8 @@ namespace Infrastructure.DAL
         IGenericRepository<TEntity, TId> GetRepository<TEntity, TId>( )
             where TEntity : Entity<TId>;
 
+        void BeginTransaction();
+        void CommitTransaction();
+        void CancelTransaction();
     }
 }

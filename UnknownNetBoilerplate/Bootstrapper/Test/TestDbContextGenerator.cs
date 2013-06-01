@@ -1,8 +1,8 @@
 using System.Data.Entity;
+using DAL.EF;
 using Test.Infrastructure.DAL;
 
-
-namespace DAL.EF
+namespace Bootstrapper.Test
 {
     public class TestDbContextGenerator : IDbContextGenerator
     {

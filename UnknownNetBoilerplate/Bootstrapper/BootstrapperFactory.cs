@@ -15,9 +15,13 @@ namespace Bootstrapper
             {
                 return new LocalBootstrapper();
             }
-            else if (index == BootstrapTypes.Test)
+            else if (index == BootstrapTypes.UnitTest)
             {
-                return new TestBootstrapper();
+                return new UnitTestsBootstrapper();
+            }
+            else if (index == BootstrapTypes.IntegrationTest)
+            {
+                return new IntegrationBootstrapper();
             }
             else
             {

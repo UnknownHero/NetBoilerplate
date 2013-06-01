@@ -6,7 +6,7 @@ using Infrastructure.Root;
 
 namespace Bootstrapper
 {
-    public class TestBootstrapper : IBootstrapper
+    public class UnitTestsBootstrapper : IBootstrapper
     {
         public void Run()
         {

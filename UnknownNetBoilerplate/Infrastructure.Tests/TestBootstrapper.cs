@@ -6,7 +6,7 @@ namespace Infrastructure.Tests
     {
         public void Run()
         {
-            new BootstrapperFactory().GetBoostrapper(BootstrapTypes.Test).Run();
+            new BootstrapperFactory().GetBoostrapper(BootstrapTypes.UnitTest).Run();
         } 
     }
 }
