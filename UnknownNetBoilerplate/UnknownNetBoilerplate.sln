@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Common", "Domain.Common\Domain.Common.csproj", "{E542D9FB-F67C-43E3-98E7-7AA8C2C54849}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{22247227-88EB-45DE-A169-6F4219F63A4D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Infrastructure", "Test.Infrastructure\Test.Infrastructure.csproj", "{E076A9A4-4589-4EE6-9F43-D38B11F59EE8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4BF0715E-F31D-4107-8D59-1EBB35026774}"
@@ -29,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4BF071
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Workflows", "Domain.Workflows\Domain.Workflows.csproj", "{811C8DAC-2A51-40A8-9BE4-55334B35DACB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,14 +72,14 @@ Global
 		{E542D9FB-F67C-43E3-98E7-7AA8C2C54849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E542D9FB-F67C-43E3-98E7-7AA8C2C54849}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E542D9FB-F67C-43E3-98E7-7AA8C2C54849}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22247227-88EB-45DE-A169-6F4219F63A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22247227-88EB-45DE-A169-6F4219F63A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22247227-88EB-45DE-A169-6F4219F63A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22247227-88EB-45DE-A169-6F4219F63A4D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E076A9A4-4589-4EE6-9F43-D38B11F59EE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E076A9A4-4589-4EE6-9F43-D38B11F59EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E076A9A4-4589-4EE6-9F43-D38B11F59EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E076A9A4-4589-4EE6-9F43-D38B11F59EE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{811C8DAC-2A51-40A8-9BE4-55334B35DACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{811C8DAC-2A51-40A8-9BE4-55334B35DACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{811C8DAC-2A51-40A8-9BE4-55334B35DACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{811C8DAC-2A51-40A8-9BE4-55334B35DACB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
