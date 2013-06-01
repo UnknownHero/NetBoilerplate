@@ -8,3 +8,11 @@
 /UnknownNetBoilerplate/Infrastructure.Tests/bin
 /UnknownNetBoilerplate/Backend/bin
 /UnknownNetBoilerplate/Backend/obj
+<<<<<<< HEAD
+=======
+*bin/
+*obj/
+*.suo
+*.user
+/TestsResults
+>>>>>>> b0ac5e3cf99d1680d44445d5c8e8bbedd03d3de0
